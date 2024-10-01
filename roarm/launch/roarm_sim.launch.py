@@ -10,6 +10,9 @@ from launch.conditions import IfCondition, UnlessCondition
 from launch.substitutions import Command, LaunchConfiguration
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
+
+from launch.actions import IncludeLaunchDescription, TimerAction
+from launch.launch_description_sources import PythonLaunchDescriptionSource
  
 def generate_launch_description():
  
@@ -96,6 +99,58 @@ def generate_launch_description():
     name='rviz2',
     output='screen',
     arguments=['-d', rviz_config_file])
+  
+
+
+
+
+  # launch gz
+  gazebo = IncludeLaunchDescription(
+    PythonLaunchDescriptionSource([os.path.join(
+      FindPackageShare('ros_gz_sim').find('ros_gz_sim'), 'launch', 'gz_sim.launch.py'
+    )]), launch_arguments={'gz_args': '-r empty.sdf'}.items()
+  )
+
+  spawn_entity = Node(package='ros_gz_sim',
+                      executable='create',
+                      arguments=['-topic', 'robot_description',
+                                  '-name', 'roarm'],
+                      output='screen')
+
+  # launch bridge
+  bridge_params = os.path.join(pkg_share,'config','bridge.yaml')
+  bridge = Node(
+      package='ros_gz_bridge',
+      executable='parameter_bridge',
+      arguments=['--ros-args', '-p', 'config_file:=' + bridge_params]
+  )
+
+  # launch controller manager
+  robot_description_test = Command(['ros2 param get --hide-type /robot_state_publisher robot_description'])
+  controller_params = os.path.join(pkg_share,'config','sim_controllers.yaml')
+  controller_manager = Node(
+      package="controller_manager",
+      executable="ros2_control_node",
+      parameters=[{'robot_description': robot_description_test},
+                  controller_params]
+  )
+
+  delayed_controller_manager = TimerAction(period=3.0, actions=[controller_manager])
+  
+  # launch controllers
+  vel_cont_spawner = Node(
+      package="controller_manager",
+      executable="spawner",
+      arguments=["vel_cont"]
+  )
+
+  joint_broad_spawner = Node(
+      package="controller_manager",
+      executable="spawner",
+      arguments=["joint_broad"]
+  )
+
+
    
   # Create the launch description and populate
   ld = LaunchDescription()
@@ -113,5 +168,14 @@ def generate_launch_description():
   ld.add_action(start_joint_state_publisher_gui_node)
   ld.add_action(start_robot_state_publisher_cmd)
   ld.add_action(start_rviz_cmd)
+
+  # launch gz
+  ld.add_action(gazebo)
+  ld.add_action(spawn_entity)
+
+  # launch controllers
+  #ld.add_action(delayed_controller_manager)
+  #ld.add_action(vel_cont_spawner)
+  #ld.add_action(joint_broad_spawner)
  
   return ld
