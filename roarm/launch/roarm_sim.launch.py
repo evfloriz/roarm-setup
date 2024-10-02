@@ -11,7 +11,7 @@ from launch.substitutions import Command, LaunchConfiguration
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
-from launch.actions import IncludeLaunchDescription, TimerAction
+from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
  
 def generate_launch_description():
@@ -23,10 +23,8 @@ def generate_launch_description():
   default_rviz_config_path = os.path.join(pkg_share, 'rviz/rviz_basic_settings.rviz')
  
   # Set the path to the URDF file
-  #default_urdf_model_path = os.path.join(pkg_share, 'urdf/roarm.urdf')
   default_urdf_model_path = os.path.join(pkg_share, 'urdf/robot.urdf.xacro')
  
-  ########### YOU DO NOT NEED TO CHANGE ANYTHING BELOW THIS LINE ##############  
   # Launch configuration variables specific to simulation
   gui = LaunchConfiguration('gui')
   urdf_model = LaunchConfiguration('urdf_model')
@@ -45,11 +43,6 @@ def generate_launch_description():
     name='rviz_config_file',
     default_value=default_rviz_config_path,
     description='Full path to the RVIZ config file to use')
-     
-  declare_use_joint_state_publisher_cmd = DeclareLaunchArgument(
-    name='gui',
-    default_value='True',
-    description='Flag to enable joint_state_publisher_gui')
    
   declare_use_robot_state_pub_cmd = DeclareLaunchArgument(
     name='use_robot_state_pub',
@@ -65,22 +58,6 @@ def generate_launch_description():
     name='use_sim_time',
     default_value='True',
     description='Use simulation (Gazebo) clock if true')
-    
-  # Specify the actions
- 
-  # Publish the joint state values for the non-fixed joints in the URDF file.
-  start_joint_state_publisher_cmd = Node(
-    condition=UnlessCondition(gui),
-    package='joint_state_publisher',
-    executable='joint_state_publisher',
-    name='joint_state_publisher')
- 
-  # A GUI to manipulate the joint state values
-  start_joint_state_publisher_gui_node = Node(
-    condition=IfCondition(gui),
-    package='joint_state_publisher_gui',
-    executable='joint_state_publisher_gui',
-    name='joint_state_publisher_gui')
  
   # Subscribe to the joint states of the robot, and publish the 3D pose of each link.
   start_robot_state_publisher_cmd = Node(
@@ -101,10 +78,7 @@ def generate_launch_description():
     arguments=['-d', rviz_config_file])
   
 
-
-
-
-  # launch gz
+  # Launch gz
   gazebo = IncludeLaunchDescription(
     PythonLaunchDescriptionSource([os.path.join(
       FindPackageShare('ros_gz_sim').find('ros_gz_sim'), 'launch', 'gz_sim.launch.py'
@@ -118,37 +92,19 @@ def generate_launch_description():
                                   '-z', '0.0850'],
                       output='screen')
 
-  # launch bridge
+  # Launch bridge
   bridge_params = os.path.join(pkg_share,'config','bridge.yaml')
   bridge = Node(
       package='ros_gz_bridge',
       executable='parameter_bridge',
       arguments=['--ros-args', '-p', 'config_file:=' + bridge_params]
   )
-
-  # launch controller manager
-  robot_description_test = Command(['ros2 param get --hide-type /robot_state_publisher robot_description'])
-  controller_params = os.path.join(pkg_share,'config','sim_controllers.yaml')
-  controller_manager = Node(
-      package="controller_manager",
-      executable="ros2_control_node",
-      parameters=[{'robot_description': robot_description_test},
-                  controller_params]
-  )
-
-  #delayed_controller_manager = TimerAction(period=3.0, actions=[controller_manager])
   
-  # launch controllers
+  # Launch controllers
   pos_cont_spawner = Node(
       package="controller_manager",
       executable="spawner",
       arguments=["pos_cont"]
-  )
-  
-  vel_cont_spawner = Node(
-      package="controller_manager",
-      executable="spawner",
-      arguments=["vel_cont"]
   )
 
   joint_broad_spawner = Node(
@@ -156,8 +112,6 @@ def generate_launch_description():
       executable="spawner",
       arguments=["joint_broad"]
   )
-
-
    
   # Create the launch description and populate
   ld = LaunchDescription()
@@ -165,29 +119,23 @@ def generate_launch_description():
   # Declare the launch options
   ld.add_action(declare_urdf_model_path_cmd)
   ld.add_action(declare_rviz_config_file_cmd)
-  ld.add_action(declare_use_joint_state_publisher_cmd)
   ld.add_action(declare_use_robot_state_pub_cmd)  
   ld.add_action(declare_use_rviz_cmd) 
   ld.add_action(declare_use_sim_time_cmd)
-  ld.add_action(start_rviz_cmd)
  
-  # Add any actions
-  #ld.add_action(start_joint_state_publisher_cmd)
-  #ld.add_action(start_joint_state_publisher_gui_node)
+  # Start rsp
   ld.add_action(start_robot_state_publisher_cmd)
-  
 
-  # launch gz
+  # Start rviz
+  ld.add_action(start_rviz_cmd)
+  
+  # Start gz
   ld.add_action(gazebo)
   ld.add_action(spawn_entity)
   ld.add_action(bridge)
 
-  # launch controllers
-  #ld.add_action(delayed_controller_manager)
+  # Start controllers
   ld.add_action(pos_cont_spawner)
-  #ld.add_action(vel_cont_spawner)
   ld.add_action(joint_broad_spawner)
-
-  
  
   return ld
