@@ -114,7 +114,8 @@ def generate_launch_description():
   spawn_entity = Node(package='ros_gz_sim',
                       executable='create',
                       arguments=['-topic', 'robot_description',
-                                  '-name', 'roarm'],
+                                  '-name', 'roarm',
+                                  '-z', '0.0850'],
                       output='screen')
 
   # launch bridge
@@ -135,9 +136,15 @@ def generate_launch_description():
                   controller_params]
   )
 
-  delayed_controller_manager = TimerAction(period=3.0, actions=[controller_manager])
+  #delayed_controller_manager = TimerAction(period=3.0, actions=[controller_manager])
   
   # launch controllers
+  pos_cont_spawner = Node(
+      package="controller_manager",
+      executable="spawner",
+      arguments=["pos_cont"]
+  )
+  
   vel_cont_spawner = Node(
       package="controller_manager",
       executable="spawner",
@@ -162,20 +169,25 @@ def generate_launch_description():
   ld.add_action(declare_use_robot_state_pub_cmd)  
   ld.add_action(declare_use_rviz_cmd) 
   ld.add_action(declare_use_sim_time_cmd)
+  ld.add_action(start_rviz_cmd)
  
   # Add any actions
-  ld.add_action(start_joint_state_publisher_cmd)
-  ld.add_action(start_joint_state_publisher_gui_node)
+  #ld.add_action(start_joint_state_publisher_cmd)
+  #ld.add_action(start_joint_state_publisher_gui_node)
   ld.add_action(start_robot_state_publisher_cmd)
-  ld.add_action(start_rviz_cmd)
+  
 
   # launch gz
   ld.add_action(gazebo)
   ld.add_action(spawn_entity)
+  ld.add_action(bridge)
 
   # launch controllers
   #ld.add_action(delayed_controller_manager)
+  ld.add_action(pos_cont_spawner)
   #ld.add_action(vel_cont_spawner)
-  #ld.add_action(joint_broad_spawner)
+  ld.add_action(joint_broad_spawner)
+
+  
  
   return ld

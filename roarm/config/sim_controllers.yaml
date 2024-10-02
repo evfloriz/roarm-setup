@@ -3,11 +3,22 @@ controller_manager:
     update_rate: 100
     use_sim_time: true
 
+    pos_cont:
+      type: position_controllers/JointGroupPositionController
+    
     vel_cont:
-      type: elocity_controllers/JointGroupVelocityController
+      type: velocity_controllers/JointGroupVelocityController
       
     joint_broad:
       type: joint_state_broadcaster/JointStateBroadcaster
+
+pos_cont:
+  ros__parameters:
+    joints:
+      - base_to_L1
+      - L1_to_L2
+      - L2_to_L3
+      - L3_to_L4
 
 vel_cont:
   ros__parameters:
