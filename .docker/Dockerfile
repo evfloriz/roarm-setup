@@ -38,6 +38,11 @@ RUN usermod -aG video ${USERNAME}
 COPY entrypoint.sh /entrypoint.sh
 COPY bashrc /home/${USERNAME}/.bashrc
 
+# create user-owned directory
+USER $USERNAME
+RUN mkdir /home/${USERNAME}/roarm_ws
+USER root
+
 ENTRYPOINT [ "/bin/bash", "/entrypoint.sh" ]
 
 CMD ["bash"]
