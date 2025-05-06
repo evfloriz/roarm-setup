@@ -20,7 +20,7 @@ def generate_launch_description():
   pkg_share = FindPackageShare(package='roarm').find('roarm')
  
   # Set the path to the RViz configuration settings
-  default_rviz_config_path = os.path.join(pkg_share, 'rviz/rviz_basic_settings.rviz')
+  default_rviz_config_path = os.path.join(pkg_share, 'rviz/view_description.rviz')
  
   # Set the path to the URDF file
   default_urdf_model_path = os.path.join(pkg_share, 'urdf/robot.urdf.xacro')
@@ -88,8 +88,8 @@ def generate_launch_description():
   spawn_entity = Node(package='ros_gz_sim',
                       executable='create',
                       arguments=['-topic', 'robot_description',
-                                  '-name', 'roarm',
-                                  '-z', '0.0850'],
+                                  '-name', 'roarm'],
+                                  #'-z', '0.0850'],
                       output='screen')
 
   # Launch bridge
