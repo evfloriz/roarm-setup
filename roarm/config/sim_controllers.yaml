@@ -15,16 +15,15 @@ controller_manager:
 pos_cont:
   ros__parameters:
     joints:
-      - base_to_L1
-      - L1_to_L2
-      - L2_to_L3
-      - L3_to_L4
+      - base_link_to_link1
+      - link1_to_link2
+      - link2_to_link3
+      - link3_to_gripper_link
 
 vel_cont:
   ros__parameters:
     joints:
-      - base_to_L1
-      - L1_to_L2
-      - L2_to_L3
-      - L3_to_L4
-
+      - base_link_to_link1
+      - link1_to_link2
+      - link2_to_link3
+      - link3_to_gripper_link
