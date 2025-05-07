@@ -12,14 +12,14 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="file://$(find roarm)/meshes/base_link.stl"  scale="1.0 1.0 1.0"/>
+        <mesh filename="file://$(find roarm_description)/meshes/base_link.stl"  scale="1.0 1.0 1.0"/>
       </geometry>
       <material name="silver"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="file://$(find roarm)/meshes/base_link.stl"  scale="1.0 1.0 1.0"/>
+        <mesh filename="file://$(find roarm_description)/meshes/base_link.stl"  scale="1.0 1.0 1.0"/>
       </geometry>
     </collision>
   </link>
@@ -33,14 +33,14 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry> 
-        <mesh filename="file://$(find roarm)/meshes/link1.stl"  scale="1.0 1.0 1.0"/>
+        <mesh filename="file://$(find roarm_description)/meshes/link1.stl"  scale="1.0 1.0 1.0"/>
       </geometry>
       <material name="silver"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="file://$(find roarm)/meshes/link1.stl"  scale="1.0 1.0 1.0"/>
+        <mesh filename="file://$(find roarm_description)/meshes/link1.stl"  scale="1.0 1.0 1.0"/>
       </geometry>
     </collision>
   </link>
@@ -54,14 +54,14 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="file://$(find roarm)/meshes/link2.stl"  scale="1.0 1.0 1.0"/>
+        <mesh filename="file://$(find roarm_description)/meshes/link2.stl"  scale="1.0 1.0 1.0"/>
       </geometry>
       <material name="silver"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="file://$(find roarm)/meshes/link2.stl"  scale="1.0 1.0 1.0"/>
+        <mesh filename="file://$(find roarm_description)/meshes/link2.stl"  scale="1.0 1.0 1.0"/>
       </geometry>
     </collision>
   </link>
@@ -75,14 +75,14 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="file://$(find roarm)/meshes/link3.stl"  scale="1.0 1.0 1.0"/>
+        <mesh filename="file://$(find roarm_description)/meshes/link3.stl"  scale="1.0 1.0 1.0"/>
       </geometry>
       <material name="silver"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="file://$(find roarm)/meshes/link3.stl"  scale="1.0 1.0 1.0"/>
+        <mesh filename="file://$(find roarm_description)/meshes/link3.stl"  scale="1.0 1.0 1.0"/>
       </geometry>
     </collision>
   </link>
@@ -96,14 +96,14 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="file://$(find roarm)/meshes/gripper_link.stl"  scale="1.0 1.0 1.0"/>
+        <mesh filename="file://$(find roarm_description)/meshes/gripper_link.stl"  scale="1.0 1.0 1.0"/>
       </geometry>
       <material name="silver"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="file://$(find roarm)/meshes/gripper_link.stl"  scale="1.0 1.0 1.0"/>
+        <mesh filename="file://$(find roarm_description)/meshes/gripper_link.stl"  scale="1.0 1.0 1.0"/>
       </geometry>
     </collision>
   </link>

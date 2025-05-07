@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>roarm</name>
+  <name>roarm_description</name>
   <version>0.0.0</version>
-  <description>The URDF model of RoArm-M1</description>
-  <maintainer email="effectsmachine@outlook.com">roarm</maintainer>
+  <description>The URDF description of roarm-m2-s with gripper</description>
+  <maintainer email="ev.floriz@gmail.com">evan</maintainer>
   <license>MIT</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
