@@ -9,8 +9,14 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
+find_package(Curses REQUIRED)
 
 add_executable(teleop src/teleop.cpp)
+
+target_link_libraries(teleop
+  ${CURSES_LIBRARIES}
+)
+
 ament_target_dependencies(teleop rclcpp std_msgs)
 
 install(TARGETS teleop

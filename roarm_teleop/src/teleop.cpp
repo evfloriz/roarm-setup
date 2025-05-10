@@ -2,39 +2,63 @@
 #include <functional>
 #include <memory>
 #include <string>
+#include <ncurses.h>
+#include <thread>
 
 #include <rclcpp/rclcpp.hpp>
 #include <std_msgs/msg/string.hpp>
 
 using namespace std::chrono_literals;
 
-class TeleopPublisher : public rclcpp::Node
+class TeleopNode : public rclcpp::Node
 {
 public:
-    TeleopPublisher()
-        : Node("teleop_publisher")
-        , count_(0) {
+    TeleopNode()
+        : Node("teleop_publisher") {
+        
         publisher_ = this->create_publisher<std_msgs::msg::String>("topic", 10);
-        timer_ = this->create_wall_timer(
-            500ms, std::bind(&TeleopPublisher::timer_callback, this));
+        timer_ = this->create_wall_timer(20ms, std::bind(&TeleopNode::timer_callback, this));
+
+        // Init ncurses
+        initscr();
+        cbreak();
+        noecho();
+        nodelay(stdscr, TRUE);
+    }
+
+    ~TeleopNode() {
+        // Close ncurses
+        endwin();
     }
 
 private:
     void timer_callback() {
+        char c = getch();
+        if (c == ERR) {
+            return;
+        }
+
+        clear();
+        printw("%c", c);
+        refresh();
+
         auto message = std_msgs::msg::String();
-        message.data = "Hello world! " + std::to_string(count_++);
-        RCLCPP_INFO(this->get_logger(), "Publishing: '%s", message.data.c_str());
+        std::string input = {c};
+        message.data = "Input: " + input;
         publisher_->publish(message);
     }
     
     rclcpp::TimerBase::SharedPtr timer_;
     rclcpp::Publisher<std_msgs::msg::String>::SharedPtr publisher_;
-    size_t count_;
+
+    std::thread keyboard_thread;
+    bool stop_keyboard_thread = false;
 };
 
 int main(int argc, char **argv) {
+
     rclcpp::init(argc, argv);
-    rclcpp::spin(std::make_shared<TeleopPublisher>());
+    rclcpp::spin(std::make_shared<TeleopNode>());
     rclcpp::shutdown();
     
     return 0;
