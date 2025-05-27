@@ -82,7 +82,7 @@ def generate_launch_description():
   gazebo = IncludeLaunchDescription(
     PythonLaunchDescriptionSource([os.path.join(
       FindPackageShare('ros_gz_sim').find('ros_gz_sim'), 'launch', 'gz_sim.launch.py'
-    )]), launch_arguments={'gz_args': '-r empty.sdf'}.items()
+    )]), launch_arguments={'gz_args': '-r empty.sdf', 'use_sim_time': use_sim_time}.items()
   )
 
   spawn_entity = Node(package='ros_gz_sim',
@@ -97,14 +97,41 @@ def generate_launch_description():
   bridge = Node(
       package='ros_gz_bridge',
       executable='parameter_bridge',
+      parameters=[{'use_sim_time': use_sim_time}],
       arguments=['--ros-args', '-p', 'config_file:=' + bridge_params]
   )
   
+  '''
+  controller_params = os.path.join(pkg_share,'config','sim_controllers.yaml')
+  control_node = Node(
+    package="controller_manager",
+    executable="ros2_control_node",
+    parameters=[{'use_sim_time': use_sim_time}],
+    arguments=['--ros-args', '-p', 'config_file:=' + controller_params],
+    output="both"
+  )
+  '''
+  
   # Launch controllers
+  '''
   pos_cont_spawner = Node(
       package="controller_manager",
       executable="spawner",
       arguments=["pos_cont"]
+  )
+  
+
+  vel_cont_spawner = Node(
+      package="controller_manager",
+      executable="spawner",
+      arguments=["vel_cont"]
+  )
+  '''
+
+  traj_cont_spawner = Node(
+      package="controller_manager",
+      executable="spawner",
+      arguments=["joint_trajectory_controller"]
   )
 
   joint_broad_spawner = Node(
@@ -133,9 +160,13 @@ def generate_launch_description():
   ld.add_action(gazebo)
   ld.add_action(spawn_entity)
   ld.add_action(bridge)
+  
+  #ld.add_action(control_node)
 
   # Start controllers
-  ld.add_action(pos_cont_spawner)
+  #ld.add_action(pos_cont_spawner)
+  #ld.add_action(vel_cont_spawner)
+  ld.add_action(traj_cont_spawner)
   ld.add_action(joint_broad_spawner)
  
   return ld

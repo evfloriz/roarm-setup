@@ -1,3 +1,8 @@
+gz_ros2_control:
+  ros__parameters:
+    hold_joints: false
+    position_proportional_gain: 0.5
+
 controller_manager:
   ros__parameters:
     update_rate: 100
@@ -19,6 +24,11 @@ pos_cont:
       - link1_to_link2
       - link2_to_link3
       - link3_to_gripper_link
+
+    gains:
+      base_link_to_link1:
+        position: 0.5
+
 
 vel_cont:
   ros__parameters:
