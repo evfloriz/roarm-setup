@@ -32,6 +32,12 @@ RUN apt-get update \
     ros-humble-ros-gz \
     ros-humble-gz-ros2-control \
     && rm -rf /var/lib/apt/lists/*
+
+# install ncurses
+RUN apt-get update \
+    && apt-get install -y \
+    libncurses5-dev libncursesw5-dev \
+    && rm -rf /var/lib/apt/lists/*
     
 RUN usermod -aG video ${USERNAME}
 
